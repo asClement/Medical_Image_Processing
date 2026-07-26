@@ -3,7 +3,7 @@ import numpy as np
 from scipy.ndimage import gaussian_filter
 
 from denoise.base import BaseMedicalDenoiser
-from denoise.io.nifti import MedicalImage3D
+from medio.nifti import MedicalImage3D
 
 
 class GaussianDenoiser(BaseMedicalDenoiser):
@@ -17,9 +17,7 @@ class GaussianDenoiser(BaseMedicalDenoiser):
         # traitement si c'est un objet MedicalImage3D
         if isinstance(image, MedicalImage3D):
             filtered_data = gaussian_filter(image.data, sigma=self.sigma)
-            return MedicalImage3D(
-                data=filtered_data, affine=image.affine, header=image.header
-            )
+            return MedicalImage3D(data=filtered_data, affine=image.affine, header=image.header)
         # traitement si c'est un np.ndarray
         elif isinstance(image, np.ndarray):
             return gaussian_filter(image, sigma=self.sigma)

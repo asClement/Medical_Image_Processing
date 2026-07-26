@@ -2,8 +2,9 @@
 # POINT D'ENTREE
 ###########################################
 
-from ispy2_extractor import ISPY2Extractor
 from pathlib import Path
+
+from ispy2_extractor import ISPY2Extractor
 
 PROJECT_ROOT = Path(".")
 

@@ -3,7 +3,7 @@ import numpy as np
 import SimpleITK as sitk
 
 from denoise.base import BaseMedicalDenoiser
-from denoise.io.nifti import MedicalImage3D
+from medio.nifti import MedicalImage3D
 
 
 class AnisotropicDenoiser(BaseMedicalDenoiser):
@@ -12,9 +12,7 @@ class AnisotropicDenoiser(BaseMedicalDenoiser):
     Ultra performant pour éliminer le bruit IRM tout en préservant la netteté.
     """
 
-    def __init__(
-        self, n_iter: int = 5, time_step: float = 0.0625, conductance: float = 9.0
-    ):
+    def __init__(self, n_iter: int = 5, time_step: float = 0.0625, conductance: float = 9.0):
         self.n_iter = n_iter
         self.time_step = time_step
         self.conductance = conductance

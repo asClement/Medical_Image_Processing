@@ -3,8 +3,7 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 
-# conteneur de métadonnées spatiales
-from denoise.io.nifti import MedicalImage3D
+from medio.nifti import MedicalImage3D
 
 
 class BaseMedicalDenoiser(ABC):

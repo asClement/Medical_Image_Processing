@@ -4,7 +4,7 @@ from dipy.denoise.nlmeans import nlmeans
 from dipy.denoise.noise_estimate import estimate_sigma
 
 from denoise.base import BaseMedicalDenoiser
-from denoise.io.nifti import MedicalImage3D
+from medio.nifti import MedicalImage3D
 
 
 class NLMRicianDenoiser(BaseMedicalDenoiser):
@@ -14,9 +14,7 @@ class NLMRicianDenoiser(BaseMedicalDenoiser):
     Avec les masques de segmentation pour améliorer la précision sur les zones médicales
     """
 
-    def __init__(
-        self, sigma: None | float = 1.0, rician: bool = False, use_mask: bool = False
-    ):
+    def __init__(self, sigma: None | float = 1.0, rician: bool = False, use_mask: bool = False):
         """
         :param sigma: Niveau de bruit estimé. Si None, il sera estimé automatiquement.
         :param rician: Si True, applique le biais de correction Rician (spécifique IRM).
@@ -48,9 +46,7 @@ class NLMRicianDenoiser(BaseMedicalDenoiser):
             noise_sigma = self.sigma
 
         # preparation du masque
-        mask_to_pass = (
-            effective_mask if (self.use_mask and effective_mask is not None) else None
-        )
+        mask_to_pass = effective_mask if (self.use_mask and effective_mask is not None) else None
 
         # application du filtre NLM
         denoised = nlmeans(

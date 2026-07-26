@@ -1,16 +1,19 @@
 from pathlib import Path
 
-from denoise.io.nifti import load_nifti
-from denoise.spatial.anisotropic import AnisotropicDenoiser
-from denoise.spatial.gaussian import GaussianDenoiser
-from denoise.statistical.nlmeans import NLMRicianDenoiser
+from denoise.anisotropic import AnisotropicDenoiser
+from denoise.gaussian import GaussianDenoiser
+from denoise.nlmeans import NLMRicianDenoiser
+from medio.nifti import load_nifti
 
 # 1. Charger l'IRM DCE et le masque de la tumeur ISPY2
 PATIENT_ID = "sub-ISPY2-125130"
 SESSION_ID = "ses-T0"
 SERIES_ID = "dce-post-1"
 NIFTI_FOLDER = "ISPY2_dataset/derivatives/nifti"
-nifti_file = Path(NIFTI_FOLDER) / f"{PATIENT_ID}/{SESSION_ID}/perf/{PATIENT_ID}_{SESSION_ID}_{SERIES_ID}.nii.gz"
+nifti_file = (
+    Path(NIFTI_FOLDER)
+    / f"{PATIENT_ID}/{SESSION_ID}/perf/{PATIENT_ID}_{SESSION_ID}_{SERIES_ID}.nii.gz"
+)
 irm = load_nifti(nifti_file)
 
 # 2. Débruiter uniquement la tumeur pour les analyses de radiomique
