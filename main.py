@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from denoise.anisotropic import AnisotropicDenoiser
 from denoise.nlmeans import NLMRicianDenoiser
 from edges.classic.canny import CannyEdgeDetector
+from edges.classic.sobel import SobelEdgeDetector
 from medio.nifti import load_nifti
 
 # 1. Charger l'IRM DCE
@@ -32,17 +33,24 @@ irm_denoised = denoiser_anisotropic.filter(irm_denoised)
 
 # Détection des contours
 canny = CannyEdgeDetector()
-edges = canny.detect(irm_denoised, mask)
+edges_canny = canny.detect(irm_denoised, mask)
+
+sobel = SobelEdgeDetector()
+edges_sobel = sobel.detect(irm_denoised, mask)
 
 # Affichage
 slice_index = irm.data.shape[2] // 2
 slice_original = irm.data[:, :, slice_index]
-slice_edges = edges.data[:, :, slice_index]
+slice_canny = edges_canny.data[:, :, slice_index]
+slice_sobel = edges_sobel.data[:, :, slice_index]
 
-fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
 axes[0].imshow(slice_original.T, cmap="gray", origin="lower")
 axes[0].set_title("Coupe IRM originale")
 
-axes[1].imshow(slice_edges.T, cmap="gray", origin="lower")
+axes[1].imshow(slice_canny.T, cmap="gray", origin="lower")
 axes[1].set_title("Contours (Canny)")
+
+axes[2].imshow(slice_sobel.T, cmap="gray", origin="lower")
+axes[2].set_title("Contours (Sobel)")
 plt.show()
