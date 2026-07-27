@@ -13,7 +13,7 @@ class BaseEdgeDetector(ABC):
         self,
         image: MedicalImage3D | np.ndarray,
         mask: np.ndarray | None = None,
-    ) -> MedicalImage3D | None:
+    ) -> MedicalImage3D | np.ndarray:
         """
         Détecte les contours dans un image médicale 3D ou un array numpy."""
         pass

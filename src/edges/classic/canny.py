@@ -18,19 +18,44 @@ class CannyEdgeDetector(BaseEdgeDetector):
         self,
         image: MedicalImage3D | np.ndarray,
         mask: np.ndarray | None = None,
-    ) -> MedicalImage3D | None:
+    ) -> MedicalImage3D | np.ndarray:
         """
         Détecte les contours dans l'image en utilisant l'algorithme Canny.
         """
-        if isinstance(image, MedicalImage3D):
-            data = image.data
-        else:
-            data = image
-        edges = canny(
-            data,
-            sigma=self.sigma,
-            low_threshold=self.low_threshold,
-            high_threshold=self.high_threshold,
-        )
+        # extraction des données
+        is_medical_obj = isinstance(image, MedicalImage3D)
+        data = image.data if is_medical_obj else image
 
-        return MedicalImage3D(edges, affine=image.affine, header=image.header)
+        if data.ndim == 2:
+            edges = canny(
+                data,
+                sigma=self.sigma,
+                low_threshold=self.low_threshold,
+                high_threshold=self.high_threshold,
+                mask=mask,
+            )
+        # si c'est une image 3D, appliquer Canny à chaque slice
+        elif data.ndim == 3:
+            edges = np.zeros_like(data, dtype=bool)
+
+            for z in range(data.shape[2]):
+                slice_mask = mask[:, :, z] if mask is not None else None
+                edges[:, :, z] = canny(
+                    data[:, :, z],
+                    sigma=self.sigma,
+                    low_threshold=self.low_threshold,
+                    high_threshold=self.high_threshold,
+                    mask=slice_mask,
+                )
+        else:
+            raise ValueError("Dimension non supportée")
+
+        # application du masque sur le total
+        if mask is not None:
+            edges = edges * mask
+
+        # conversion en MedicalImage3D
+        if is_medical_obj:
+            return MedicalImage3D(edges, affine=image.affine, header=image.header)
+
+        return edges.astype(np.uint8)
