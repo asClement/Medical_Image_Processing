@@ -6,8 +6,6 @@ classical morphological operations (erosion / dilation / opening / closing).
 
 from __future__ import annotations
 
-from typing import Optional
-
 import numpy as np
 
 __all__ = ["Postprocessor"]
@@ -92,9 +90,9 @@ class Postprocessor:
         if num == 0:
             return np.zeros_like(m, dtype=np.uint8)
         counts = np.bincount(lbl.ravel())
-        counts[0] = 0
-        order = np.argsort(counts)[::-1]
-        keep_ids = order[1:n + 1]  # exclude background (0)
+        component_ids = np.arange(1, num + 1)
+        order = component_ids[np.argsort(counts[component_ids])[::-1]]
+        keep_ids = order[:n]
         out = np.isin(lbl, keep_ids)
         return out.astype(np.uint8)
 
@@ -203,7 +201,6 @@ class Postprocessor:
         """Spherical structuring element of given integer radius."""
         if radius < 1:
             return np.ones((1, 1, 1), dtype=np.uint8)
-        size = 2 * radius + 1
         z, y, x = np.ogrid[-radius:radius + 1, -radius:radius + 1, -radius:radius + 1]
         d2 = x * x + y * y + z * z
         return (d2 <= radius * radius).astype(np.uint8)

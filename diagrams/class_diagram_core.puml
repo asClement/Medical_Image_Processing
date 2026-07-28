@@ -1,0 +1,61 @@
+@startuml class_diagram_core
+!pragma layout smetana
+!theme plain
+left to right direction
+skinparam backgroundColor #FAFBFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam componentStyle rectangle
+
+title "Medical Image Processing — vue d’ensemble des classes"
+
+package "medio" as MEDIO #E8F1FF
+package "denoise" as DENOISE #EAF7EE
+package "edges" as EDGES #FFF4E5
+package "preprocessing" as PREPROC #F4ECFF
+package "mathmorpho" as MATH #FFF4E5
+package "segmed3d" as SEG #E8F1FF
+package "segmed3d.utils" as SEGUTILS #F4ECFF
+package "utils" as DATAUTILS #EAF7EE
+
+MEDIO ..> DENOISE : MedicalImage3D
+MEDIO ..> EDGES : MedicalImage3D
+PREPROC ..> MEDIO : NIfTI
+MATH ..> MEDIO : NiftiIO
+SEG ..> SEGUTILS : I/O / métriques
+SEGUTILS ..> MEDIO : affine / NIfTI
+DATAUTILS ..> MEDIO : volumes NIfTI
+DATAUTILS ..> "TCIA / DICOM" : extraction
+
+note MEDIO
+  I/O et métadonnées
+end note
+note DENOISE
+  Réduction du bruit
+end note
+note EDGES
+  Contours 2D/3D
+end note
+note PREPROC
+  Intensités et biais
+end note
+note MATH
+  Morphologie et mesures
+end note
+note SEG
+  Algorithmes de segmentation
+end note
+note SEGUTILS
+  I/O, métriques, visualisation
+end note
+note DATAUTILS
+  Extraction ISPY2
+end note
+
+legend bottom
+  Les diagrammes détaillés sont séparés par package :
+  medio, denoise, edges, preprocessing, mathmorpho,
+  segmed3d et utils.
+endlegend
+@enduml

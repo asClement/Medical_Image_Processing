@@ -1,0 +1,73 @@
+@startuml class_diagram_segmentation_evaluation
+!pragma layout smetana
+!theme plain
+left to right direction
+skinparam backgroundColor #FAFBFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 10
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam class {
+  BackgroundColor #E8F1FF
+  BorderColor #4666A8
+}
+
+title "Vue fonctionnelle — segmentation et évaluation"
+
+abstract class BaseSegmentation {
+  + volume_: np.ndarray
+  + affine_: np.ndarray
+  + mask_: np.ndarray | None
+  {abstract} + fit(...): BaseSegmentation
+  + get_mask(): np.ndarray
+  + save(path): str
+  + __call__(...): np.ndarray
+}
+
+package "Méthodes de segmentation" #E8F1FF {
+  class ThresholdSegmentation
+  class WatershedSegmentation
+  class ActiveContourSegmentation
+  class LevelSetSegmentation
+  class RegionGrowingSegmentation
+  class ClusteringSegmentation
+  class AtlasSegmentation
+}
+
+package "Préparation du masque" #FFF4E5 {
+  class Postprocessor <<utility>> {
+    + clean_mask(...): np.ndarray
+    + remove_small_objects(...): np.ndarray
+    + largest_cc(...): np.ndarray
+    + fill_holes(...): np.ndarray
+  }
+}
+
+package "Évaluation et visualisation" #EAF7EE {
+  class Metrics <<utility>> {
+    + dice(...): float
+    + iou(...): float
+    + hausdorff95(...): float
+    + all_metrics(...): dict
+  }
+  class Visualizer <<utility>> {
+    + plot_3d_slices(...): Figure
+    + plot_overlay(...): Figure
+    + plot_3d_surface(...): Figure
+    + plot_histogram(...): Figure
+  }
+}
+
+BaseSegmentation <|-- ThresholdSegmentation
+BaseSegmentation <|-- WatershedSegmentation
+BaseSegmentation <|-- ActiveContourSegmentation
+BaseSegmentation <|-- LevelSetSegmentation
+BaseSegmentation <|-- RegionGrowingSegmentation
+BaseSegmentation <|-- ClusteringSegmentation
+BaseSegmentation <|-- AtlasSegmentation
+BaseSegmentation ..> Postprocessor : masque
+Postprocessor ..> Metrics : masque nettoyé
+Metrics ..> Visualizer : résultats à inspecter
+AtlasSegmentation ..> "SimpleITK" : registration / STAPLE
+ClusteringSegmentation ..> "scikit-learn" : K-Means
+@enduml

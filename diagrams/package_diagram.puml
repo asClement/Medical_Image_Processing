@@ -1,0 +1,89 @@
+@startuml package_diagram
+!pragma layout smetana
+!theme plain
+left to right direction
+skinparam backgroundColor #FAFBFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title "Medical Image Processing — architecture des packages"
+
+package "src" as SRC {
+  package "medio" as MEDIO {
+    [MedicalImage3D]
+    [load_nifti]
+    [save_nifti]
+  }
+  package "denoise" as DENOISE {
+    [BaseMedicalDenoiser]
+    [AnisotropicDenoiser]
+    [GaussianDenoiser]
+    [NLMRicianDenoiser]
+  }
+  package "edges" as EDGES {
+    [BaseEdgeDetector]
+    [CannyEdgeDetector]
+    [SobelEdgeDetector]
+  }
+  package "preprocessing" as PREPROC {
+    [Preprocessing]
+  }
+  package "mathmorpho" as MATH {
+    [NiftiIO]
+    [MathMorphology]
+    [MorphologyCleaning]
+    [MorphologyEnhancement]
+    [MorphologySkeleton]
+    [DistanceTransform]
+    [MorphologyShape]
+    [MorphologyStats]
+    [WatershedSegmentation]
+  }
+  package "segmed3d" as SEG {
+    [BaseSegmentation]
+    [ThresholdSegmentation]
+    [WatershedSegmentation]
+    [ActiveContourSegmentation]
+    [LevelSetSegmentation]
+    [RegionGrowingSegmentation]
+    [ClusteringSegmentation]
+    [AtlasSegmentation]
+    package "utils" as SEGUTILS {
+      [ImageIO]
+      [Preprocessor]
+      [Postprocessor]
+      [Metrics]
+      [Visualizer]
+    }
+  }
+  package "utils" as DATAUTILS {
+    [ISPY2Extractor]
+  }
+}
+
+DENOISE --> MEDIO : MedicalImage3D
+EDGES --> MEDIO : MedicalImage3D
+SEG --> SEGUTILS : export / save
+SEGUTILS --> "NumPy / SciPy" : volumes / opérations
+MATH --> "NumPy / SciPy / scikit-image" : calcul scientifique
+PREPROC --> "NiBabel / SimpleITK" : NIfTI / correction
+DATAUTILS --> "TCIA / DICOM" : extraction
+DATAUTILS --> "NiBabel / dicom2nifti" : conversion
+
+note bottom of SEG
+  API commune scikit-learn-style :
+  constructeur(volume) → fit(...) → get_mask()
+end note
+
+legend right
+  <b>Flux principal</b>
+  medio      modèle d'image et I/O minimal
+  denoise    réduction du bruit
+  edges      contours
+  mathmorpho morphologie / mesures
+  segmed3d   segmentation et évaluation
+  utils      extraction TCIA/ISPY2
+endlegend
+@enduml

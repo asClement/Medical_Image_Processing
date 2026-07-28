@@ -1,0 +1,55 @@
+@startuml sequence_ispy2
+!pragma layout smetana
+!theme plain
+skinparam backgroundColor #FAFBFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #4666A8
+  LifeLineBorderColor #4666A8
+  ParticipantBackgroundColor #E8F1FF
+  ParticipantBorderColor #4666A8
+  ActorBackgroundColor #EAF7EE
+  ActorBorderColor #3B7A57
+  BoxBackgroundColor #F4ECFF
+  BoxBorderColor #8064A2
+}
+
+title "Séquence d’extraction du dataset ISPY2"
+
+actor Chercheur
+participant "ISPY2Extractor" as Extractor
+participant "TCIA / NBIA" as TCIA
+participant "Stockage local" as Disk
+participant "dicom2nifti" as Converter
+participant "NiBabel" as Nibabel
+
+Chercheur -> Extractor: pipeline()
+activate Extractor
+
+Extractor -> TCIA: Récupérer les collections
+TCIA --> Extractor: Métadonnées ISPY2
+Extractor -> TCIA: Sélectionner un échantillon
+TCIA --> Extractor: IDs patients
+
+loop pour chaque patient et session T0–T3
+  Extractor -> Disk: Créer l’arborescence BIDS
+  Extractor -> TCIA: Télécharger les séries DICOM
+  TCIA --> Disk: Fichiers DICOM
+  Extractor -> Disk: Extraire PRE / POST / masque
+  Extractor -> Converter: Convertir la série
+  Converter --> Disk: Volume NIfTI
+  Extractor -> Nibabel: Vérifier métadonnées
+  Nibabel --> Extractor: Shape, affine, header
+end
+
+Extractor --> Chercheur: Dataset BIDS prêt
+deactivate Extractor
+
+note over Disk
+  ISPY2_dataset/
+  ├── sub-*/ses-T*/perf/*.nii.gz
+  └── sub-*/ses-T*/seg/*_mask.nii.gz
+end note
+@enduml

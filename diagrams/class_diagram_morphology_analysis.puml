@@ -1,0 +1,61 @@
+@startuml class_diagram_morphology_analysis
+!pragma layout smetana
+!theme plain
+left to right direction
+skinparam backgroundColor #FAFBFF
+skinparam defaultFontName Arial
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+title "Vue fonctionnelle — morphologie et analyse de forme"
+
+package "Transformations morphologiques" #FFF4E5 {
+  class MathMorphology {
+    + dilatation(...): np.ndarray
+    + erosion(...): np.ndarray
+    + ouverture(...): np.ndarray
+    + fermeture(...): np.ndarray
+    + reconstruction(...): np.ndarray
+    + gradient_morphologique(...): np.ndarray
+  }
+  class MorphologyEnhancement {
+    + top_hat_blanc(...): np.ndarray
+    + top_hat_noir(...): np.ndarray
+  }
+}
+
+package "Nettoyage et topologie" #E8F1FF {
+  class MorphologyCleaning {
+    + supprimer_petits_objets(...): np.ndarray
+    + supprimer_petits_trous(...): np.ndarray
+    + etiqueter_composantes(...): tuple
+    + garder_plus_grande_composante(...): np.ndarray
+  }
+  class MorphologySkeleton {
+    + squelettiser(): np.ndarray
+    + axe_median(): tuple
+  }
+  class DistanceTransform {
+    + transformee_distance(...): np.ndarray
+  }
+}
+
+package "Mesures" #EAF7EE {
+  class MorphologyShape {
+    + enveloppe_convexe(): np.ndarray
+    + indice_convexite(): float
+  }
+  class MorphologyStats {
+    + resume(): dict
+    + rapport_complet(...): dict
+    + histogramme_intensites(...)
+    + afficher_coupes(...)
+  }
+}
+
+MathMorphology ..> MorphologyEnhancement : éléments structurants
+MorphologyCleaning ..> MorphologyStats : avant / après
+MorphologySkeleton ..> DistanceTransform : épaisseur / topologie
+MorphologyShape ..> MorphologyStats : caractéristiques
+DistanceTransform ..> "SciPy / scikit-image" : calcul numérique
+@enduml

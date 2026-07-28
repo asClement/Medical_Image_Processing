@@ -1,0 +1,92 @@
+@startuml pipeline_diagram
+!pragma layout smetana
+!theme plain
+top to bottom direction
+skinparam backgroundColor #FAFBFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam roundcorner 14
+skinparam ArrowColor #4B5563
+skinparam ActivityBorderColor #4666A8
+skinparam ActivityFontColor #172554
+skinparam activity {
+  BackgroundColor #E8F1FF
+  DiamondBackgroundColor #FFF4E5
+  DiamondBorderColor #B7791F
+  StartColor #3B7A57
+  EndColor #A33A3A
+}
+
+title "Pipeline de traitement et d’évaluation d’une IRM DCE"
+
+start
+
+partition "1 — Entrées et contrôle" #E8F1FF {
+  :Sélectionner le patient,
+  la session et la série DCE;
+  :Charger le volume NIfTI
+  et le masque optionnel;
+  :Vérifier shape, affine,
+  orientation et spacing;
+}
+
+partition "2 — Prétraitement" #F4ECFF {
+  :Corriger le champ de biais
+  (N4, optionnel);
+  :Normaliser / rehausser
+  les intensités;
+}
+
+partition "3 — Débruitage" #EAF7EE {
+  :NLM Rician;
+  :Diffusion anisotrope
+  ou filtre gaussien;
+}
+
+partition "4 — Segmentation" #FFF4E5 {
+  :Choisir une stratégie;
+  if (Type de segmentation ?) then (classique)
+    :Otsu, watershed
+    ou region growing;
+  elseif (contour)
+    :Active contour
+    ou level set;
+  elseif (clustering)
+    :K-Means / Fuzzy C-Means;
+  else (atlas)
+    :Registration
+    et fusion multi-atlas;
+  endif
+}
+
+partition "5 — Post-traitement" #E8F1FF {
+  :Binariser le masque;
+  :Supprimer les petites composantes;
+  :Combler les trous;
+  :Conserver la composante principale
+  si nécessaire;
+}
+
+partition "6 — Évaluation et sorties" #EAF7EE {
+  if (Masque de référence disponible ?) then (oui)
+    :Calculer Dice, IoU,
+    précision, sensibilité
+    et Hausdorff95;
+  else (non)
+    :Ignorer l’évaluation quantitative;
+  endif
+  :Visualiser les coupes,
+  overlays et contours;
+  :Sauvegarder le masque NIfTI
+  et les résultats;
+}
+
+stop
+
+legend bottom
+  <b>Entrées</b> : volume DCE NIfTI, masque de référence optionnel
+  <b>Sorties</b> : masque binaire, métriques, visualisations
+  <b>Convention</b> : les étapes marquées « optionnel » peuvent être désactivées
+endlegend
+@enduml

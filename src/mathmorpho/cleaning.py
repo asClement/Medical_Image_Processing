@@ -92,7 +92,7 @@ class MorphologyCleaning:
         """
         masque_binaire = self.image.astype(bool)
         return _skimage_remove_small_objects(
-            masque_binaire, max_size=taille_min - 1, connectivity=connectivite
+            masque_binaire, min_size=taille_min, connectivity=connectivite
         )
 
     def supprimer_petits_trous(self, taille_min: int = 64, connectivite: int = 1) -> np.ndarray:
@@ -136,7 +136,7 @@ class MorphologyCleaning:
         """
         masque_binaire = self.image.astype(bool)
         return _skimage_remove_small_holes(
-            masque_binaire, max_size=taille_min, connectivity=connectivite
+            masque_binaire, area_threshold=taille_min, connectivity=connectivite
         )
 
     def etiqueter_composantes(self, connectivite: int = 1):

@@ -34,6 +34,7 @@ def load_nifti(file_path: str | Path, mask_path: str | Path | None = None) -> Me
         mask_header = mask_img.header
         if mask_data.shape != data.shape:
             raise ValueError("Le masque doit avoir la même forme que l'image")
+        data = np.where(mask_data > 0, data, 0).astype(np.float32)
 
     return MedicalImage3D(
         data=data,
@@ -53,6 +54,9 @@ def save_nifti(
     new_img = nib.Nifti2Image(image.data, image.affine, header=image.header)
     nib.save(new_img, str(outp_path))
     if save_mask:
-        if image.mask is not None:
-            mask_img = nib.Nifti2Image(image.mask, image.affine, header=image.mask_header)
-            nib.save(mask_img, str(mask_path))
+        if image.mask is None:
+            raise ValueError("save_mask=True nécessite une image.mask non vide")
+        if mask_path is None:
+            raise ValueError("mask_path est requis lorsque save_mask=True")
+        mask_img = nib.Nifti2Image(image.mask, image.affine, header=image.mask_header)
+        nib.save(mask_img, str(mask_path))

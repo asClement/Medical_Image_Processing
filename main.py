@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-import numpy as np
 
 from denoise import AnisotropicDenoiser, NLMRicianDenoiser
 from edges import CannyEdgeDetector, SobelEdgeDetector
@@ -60,6 +59,7 @@ if mask_otsu_propre.sum() > 0:
 # 5. Morphologie mathématique
 nettoyeur = MorphologyCleaning(mask)
 mask_propre = nettoyeur.garder_plus_grande_composante()
+nettoyeur.set_image(mask_propre)
 mask_propre = nettoyeur.supprimer_petits_trous(taille_min=128)
 
 stats_mask = MorphologyStats(mask, mask_propre)

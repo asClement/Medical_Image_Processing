@@ -1,0 +1,50 @@
+@startuml class_diagram_preparation
+!pragma layout smetana
+!theme plain
+left to right direction
+skinparam backgroundColor #FAFBFF
+skinparam defaultFontName Arial
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+title "Vue fonctionnelle — préparation de l’image"
+
+package "Intensités" #F4ECFF {
+  class Preprocessing {
+    + min_max_global_scaling(...): Nifti1Image
+    + robust_min_max_scaling(...): Nifti1Image
+    + z_score_global_normalization(...): Nifti1Image
+    + clahe(...): Nifti1Image
+    + histogram_equalization(...): Nifti1Image
+    + gamma_correction(...): Nifti1Image
+    + bias_field_correction(...): Nifti1Image
+    + gaussian_mixture_model(...): Nifti1Image
+  }
+}
+
+package "Débruitage" #EAF7EE {
+  abstract class BaseMedicalDenoiser {
+    {abstract} + filter(image, mask=None): MedicalImage3D | np.ndarray
+  }
+  class AnisotropicDenoiser
+  class GaussianDenoiser
+  class NLMRicianDenoiser
+}
+
+package "Contours" #FFF4E5 {
+  abstract class BaseEdgeDetector {
+    {abstract} + detect(image, mask=None): MedicalImage3D | np.ndarray
+  }
+  class CannyEdgeDetector
+  class SobelEdgeDetector
+}
+
+BaseMedicalDenoiser <|-- AnisotropicDenoiser
+BaseMedicalDenoiser <|-- GaussianDenoiser
+BaseMedicalDenoiser <|-- NLMRicianDenoiser
+BaseEdgeDetector <|-- CannyEdgeDetector
+BaseEdgeDetector <|-- SobelEdgeDetector
+Preprocessing ..> "NiBabel / SimpleITK" : normalisation / correction
+BaseMedicalDenoiser ..> "medio.MedicalImage3D" : volume médical
+BaseEdgeDetector ..> "medio.MedicalImage3D" : volume médical
+@enduml
