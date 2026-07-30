@@ -1,0 +1,62 @@
+\xpginauxfiletrue 
+\selectlanguage *{french}
+\contentsline {section}{Remerciements}{1}{Doc-Start}%
+\contentsline {section}{Résumé}{2}{Doc-Start}%
+\contentsline {section}{Abstract}{3}{Doc-Start}%
+\contentsline {section}{Liste des figures}{6}{chapter*.1}%
+\contentsline {section}{Liste des tableaux}{7}{chapter*.1}%
+\contentsline {section}{Liste des abréviations}{8}{chapter*.1}%
+\contentsline {chapter}{Introduction générale}{9}{table.0.1}%
+\contentsline {chapter}{\numberline {1}ÉTUDE PRÉALABLE DU SUJET}{11}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Présentation du domaine d'étude}{11}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Le cancer du sein : contexte et enjeux}{12}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}L'IRM dans le diagnostic du cancer du sein}{12}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.3}Radiomique et analyse quantitative}{12}{subsection.1.1.3}%
+\contentsline {subsection}{\numberline {1.1.4}Les pipelines d'analyse des images médicales}{12}{subsection.1.1.4}%
+\contentsline {section}{\numberline {1.2}Problématique du sujet}{13}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Intérêt de l'étude}{13}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Objectifs du projet}{14}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Objectif général}{14}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Objectifs spécifiques}{14}{subsection.1.4.2}%
+\contentsline {section}{\numberline {1.5}Revue de la littérature}{14}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}Standards et formats de données}{14}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}Méthodes de prétraitement des IRM}{15}{subsection.1.5.2}%
+\contentsline {subsection}{\numberline {1.5.3}Extraction radiomique et standardisation IBSI}{15}{subsection.1.5.3}%
+\contentsline {section}{\numberline {1.6}Solution proposée}{15}{section.1.6}%
+\contentsline {section}{Conclusion du chapitre}{16}{section.1.6}%
+\contentsline {chapter}{\numberline {2}MATÉRIEL ET MÉTHODES}{17}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Présentation générale}{17}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Matériels}{17}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Jeu de données I-SPY 2}{17}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Organisation des données selon le standard BIDS}{18}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Environnement de développement \& matériel}{19}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Conception de la pipeline}{20}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Architecture générale \& Diagramme fonctionnel}{20}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Architecture logicielle en packages Python}{21}{subsection.2.3.2}%
+\contentsline {section}{\numberline {2.4}Modules de la pipeline}{23}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Extraction, Conversion et BIDS}{23}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Bibliothèque de prétraitement et Diagrammes de classes}{24}{subsection.2.4.2}%
+\contentsline {section}{\numberline {2.5}Méthodes de prétraitement}{27}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Protocoles d'extraction radiomique et d'analyse statistique}{28}{section.2.6}%
+\contentsline {section}{Conclusion du chapitre}{28}{section.2.6}%
+\contentsline {chapter}{\numberline {3}Résultats et discussion}{29}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Présentation des résultats}{29}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Résultats des différents modules de la pipeline}{29}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Résultats de l'extraction des données}{29}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Résultats de la conversion DICOM $\rightarrow $ NIfTI}{30}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Résultats de l'organisation des données selon BIDS}{31}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Résultats des méthodes de prétraitement}{32}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.5}Galerie des visualisations multiplanaires tridimensionnelles}{36}{subsection.3.2.5}%
+\contentsline {subsection}{\numberline {3.2.6}Résultats de l'extraction radiomique}{40}{subsection.3.2.6}%
+\contentsline {section}{\numberline {3.3}Analyse statistique}{40}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Comparaison des méthodes de prétraitement}{40}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Visualisation des résultats}{41}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Présentation des tableaux de résultats}{41}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Interprétation des résultats}{41}{subsection.3.3.4}%
+\contentsline {section}{\numberline {3.4}Discussion}{41}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Analyse des résultats}{42}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Limites de l'étude}{43}{subsection.3.4.2}%
+\contentsline {section}{\numberline {3.5}Conclusion du chapitre}{43}{section.3.5}%
+\contentsline {chapter}{Conclusion générale et perspectives}{44}{chapter*.2}%
+\contentsline {chapter}{Références bibliographiques}{46}{chapter*.3}%
+\xpginauxfilefalse 

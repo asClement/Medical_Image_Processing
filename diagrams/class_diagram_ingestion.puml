@@ -2,20 +2,23 @@
 !pragma layout smetana
 !theme plain
 left to right direction
-skinparam backgroundColor #FAFBFF
-skinparam defaultFontName Arial
-skinparam classAttributeIconSize 0
+skinparam monochrome true
 skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam classStereotypeIcon false
+skinparam linetype ortho
+hide circle
 
 title "Vue fonctionnelle — ingestion et données médicales"
 
-package "Acquisition / TCIA" #EAF7EE {
+package "Acquisition / TCIA" {
   class ISPY2Extractor {
     + project_root: Path
     + sample_size: int
     + random_state: int
     + info(): None
     + select_sample_patients(...): None
+    + create_bids_structure(...): dict
     + download_dicoms(...): Path
     + extract_volumes(...): dict
     + convert_series_to_nifti(...): Path
@@ -24,27 +27,23 @@ package "Acquisition / TCIA" #EAF7EE {
   }
 }
 
-package "Modèle d’image" #E8F1FF {
+package "Modèle d’image" {
   class MedicalImage3D <<dataclass>> {
     + data: np.ndarray
     + affine: np.ndarray
-    + header: nibabel header
+    + header: nibabel NIfTI header
     + mask: np.ndarray | None
+    + mask_header: nibabel NIfTI header | None
     + spacing: tuple
   }
   class "load_nifti" as load_nifti <<function>>
   class "save_nifti" as save_nifti <<function>>
-  class NiftiIO <<utility>> {
-    + charger_nifti(...): tuple
-    + sauvegarder_nifti(...): None
-  }
 }
 
 ISPY2Extractor ..> "TCIA / NBIA" : métadonnées
 ISPY2Extractor ..> "DICOM" : téléchargement
 ISPY2Extractor ..> "dicom2nifti" : conversion
-ISPY2Extractor ..> NiftiIO : inspection
+ISPY2Extractor ..> "NiBabel" : inspection
 load_nifti ..> MedicalImage3D : construit
 save_nifti ..> MedicalImage3D : sérialise
-NiftiIO ..> "NiBabel" : lecture / écriture
 @enduml

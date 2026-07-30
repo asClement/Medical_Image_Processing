@@ -1,0 +1,288 @@
+\chapter{Résultats et discussion}
+\label{chap:resultats_discussion}
+
+\section{Présentation des résultats}
+\label{sec:presentation_resultats}
+
+Ce chapitre présente les résultats obtenus après l'exécution de la pipeline de traitement sur le sous-ensemble disponible de la collection I-SPY 2. L'inventaire des données porte sur cinq patientes et quatre sessions longitudinales par patiente, de T0 à T3. En revanche, l'exécution complète des modules de prétraitement et de génération des figures a été réalisée sur un exemple reproductible : la patiente \texttt{ISPY2-125130}, session \texttt{T0}, série \texttt{dce-post-1}. Cette distinction permet de ne pas confondre les données disponibles avec les données effectivement traitées dans l'expérience présentée.
+
+Les résultats sont présentés selon les principales étapes de la pipeline : extraction des données DICOM, conversion au format NIfTI, organisation des fichiers, prétraitement des volumes, segmentation et préparation de l'analyse quantitative. Les résultats directement vérifiables dans le répertoire expérimental sont distingués des résultats qui nécessitent encore l'exécution d'un module radiomique et d'une analyse statistique complète.
+
+\section{Résultats des différents modules de la pipeline}
+\label{sec:resultats_modules}
+
+\subsection{Résultats de l'extraction des données}
+\label{subsec:resultats_extraction}
+
+L'extraction a permis de récupérer les données de cinq patientes : \texttt{ISPY2-125130}, \texttt{ISPY2-227832}, \texttt{ISPY2-311455}, \texttt{ISPY2-313243} et \texttt{ISPY2-767081}. Les quatre sessions attendues ont été retrouvées pour chacune d'elles, soit un total de 20 sessions.
+
+Les données DICOM sont conservées dans une arborescence organisée par patiente et par session. Le répertoire contient 19\,160 fichiers DICOM. Les séries téléchargées correspondent aux acquisitions DCE originales et aux séries d'analyse contenant les masques. Après extraction des phases temporelles, chaque session dispose des volumes \texttt{dce-pre}, \texttt{dce-post-1}, \texttt{dce-post-2}, \texttt{dce-post-3} ainsi que d'un masque.
+
+Un contrôle des métadonnées a été réalisé sur les séries disponibles. Les champs nécessaires à la conversion et au classement --- notamment \texttt{PatientID}, \texttt{StudyInstanceUID}, \texttt{SeriesInstanceUID}, \texttt{SeriesDescription}, \texttt{Rows}, \texttt{Columns} et \texttt{InstanceNumber} --- sont présents dans les fichiers contrôlés. Les 140 répertoires de séries examinés présentent un identifiant \texttt{SeriesInstanceUID} unique, ce qui indique que les séries retenues ne sont pas mélangées entre plusieurs acquisitions.
+
+\subsection{\texorpdfstring{Résultats de la conversion DICOM $\rightarrow$ NIfTI}{Résultats de la conversion DICOM vers NIfTI}}
+\label{subsec:resultats_conversion}
+
+La conversion a produit 100 fichiers NIfTI de référence : 80 volumes d'imagerie, correspondant à quatre phases DCE pour chacune des 20 sessions, et 20 masques de segmentation. Les volumes sont enregistrés au format compressé \texttt{.nii.gz}.
+
+Les contrôles effectués après conversion montrent que les 100 fichiers sont lisibles, non vides et contiennent uniquement des valeurs finies. Ils sont tous orientés selon le repère RAS. Pour chacune des 20 sessions, la dimension du masque correspond à celle des volumes DCE associés, ce qui permet leur utilisation conjointe pour les traitements ultérieurs.
+
+Les dimensions observées varient selon les acquisitions. Les principales tailles sont \texttt{(256, 256, 64)}, \texttt{(256, 256, 80)}, \texttt{(256, 256, 134)} et \texttt{(312, 312, 80)}. Cette variabilité montre que les acquisitions n'ont pas toutes été réalisées avec les mêmes paramètres spatiaux. Les espacements de voxels varient également, avec des valeurs comprises approximativement entre 0,586 et 0,962 mm dans le plan et entre 1,2 et 2,5 mm selon l'axe des coupes.
+
+Les volumes d'imagerie sont stockés en \texttt{uint16}, tandis que les masques sont stockés en \texttt{uint8}. Le masque n'est pas strictly binaire : plusieurs étiquettes sont présentes, notamment les valeurs 1, 2, 17, 32, 33, 34 et 49. Dans les traitements utilisant un masque binaire, la présence d'un voxel dans le masque est considérée par la condition \texttt{masque > 0}. Cette précision est importante pour l'interprétation des résultats de segmentation et de radiomique.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.82\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/01_original.png}
+    \caption{Coupe axiale du volume DCE sélectionné après conversion au format NIfTI ($X=108$, $Y=87$, $Z=27$).}
+    \label{fig:resultat_original}
+\end{figure}
+
+La coupe originale présente une anatomie mammaire clairement visible et une zone de signal élevé dans la région centrale de la lésion. Cette image sert de référence visuelle pour toutes les comparaisons suivantes. Elle est affichée avec une fenêtre d'intensité robuste ; les niveaux de gris observés ne doivent donc pas être interprétés comme une mesure absolue indépendante de la méthode d'affichage.
+
+\subsection{Résultats de l'organisation des données selon BIDS}
+\label{subsec:resultats_bids}
+
+L'organisation finale suit une structure de type BIDS dérivée :
+
+\begin{lstlisting}[basicstyle=\small\ttfamily]
+ISPY2_dataset/
+|-- derivatives/
+|   |-- nifti/
+|       |-- sub-ISPY2-xxxxx/
+|           |-- ses-Tx/
+|               |-- perf/
+|               |   |-- *_dce-pre.nii.gz
+|               |   |-- *_dce-post-1.nii.gz
+|               |   |-- *_dce-post-2.nii.gz
+|               |   +-- *_dce-post-3.nii.gz
+|               +-- seg/
+|                   +-- *_mask.nii.gz
+\end{lstlisting}
+
+Les cinq dossiers sujets contiennent chacun quatre dossiers de session. Les répertoires \texttt{perf} contiennent 80 volumes DCE au total et les répertoires \texttt{seg} contiennent 20 masques. La structure est donc complète pour les quatre temps étudiés. Un fichier supplémentaire, obtenu après l'exécution du module de débruitage, est présent pour la session T0 de la patiente \texttt{ISPY2-125130} ; il s'agit d'un dérivé de traitement et non d'un volume issu de la conversion initiale.
+
+La validation de l'arborescence montre que chaque session possède les deux types de données attendus et que les noms de fichiers permettent d'identifier la patiente, la session et la phase temporelle. Cette organisation facilite l'automatisation des traitements et la traçabilité des résultats.
+
+\subsection{Résultats des méthodes de prétraitement}
+\label{subsec:resultats_pretraitement}
+
+Les méthodes implémentées dans la pipeline concernent la correction d'intensité, la normalisation, l'amélioration du contraste, le débruitage, la détection de contours, la morphologie mathématique et la segmentation.
+
+La correction de champ de biais vise à réduire les variations lentes d'intensité qui ne correspondent pas à une différence anatomique réelle. La normalisation robuste par percentiles, utilisée avec les percentiles 1 et 99, ramène les intensités utiles dans un intervalle comparable tout en limitant l'influence des valeurs extrêmes. Ces traitements modifient l'échelle des intensités ; ils doivent donc être appliqués de manière identique à l'ensemble des sujets et des sessions lorsqu'une comparaison quantitative est réalisée.
+
+Le débruitage est réalisé à l'aide d'un filtre non local adapté au bruit de type Rician, suivi d'un filtrage anisotropique. L'observation qualitative attendue est une diminution des fluctuations locales dans les régions homogènes, avec une préservation relative des transitions anatomiques. Pour l'exemple disponible, le débruitage du volume \texttt{sub-ISPY2-125130\_}\allowbreak\texttt{ses-T0\_}\allowbreak\texttt{dce-post-1} conserve une corrélation élevée avec l'image originale ($r = 0{,}998$ dans le masque utilisé), tandis que l'écart absolu moyen entre les deux volumes est d'environ $4{,}93$ unités d'intensité. Cela indique une modification modérée des intensités, principalement destinée à atténuer les variations locales.
+
+La morphologie mathématique est utilisée pour produire un gradient morphologique, améliorer certaines structures par transformation top-hat et nettoyer les masques. Ces opérations facilitent l'analyse des contours et la suppression de petites composantes ou de petits trous. Les détecteurs de Canny et de Sobel fournissent ensuite deux représentations complémentaires des transitions d'intensité : Canny produit des contours plus sélectifs, tandis que Sobel fournit une réponse basée sur le gradient local.
+
+La segmentation par seuillage d'Otsu constitue une première méthode automatique. Le post-traitement comprend la suppression des petites composantes et le remplissage des trous. Cette segmentation doit être interprétée comme une étape exploratoire : son efficacité dépend du contraste entre la région d'intérêt et les tissus environnants et ne peut être jugée définitivement qu'au moyen d'une comparaison avec un masque de référence.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/01_original.png}\hfill
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/02_bias_corrected.png}\\[0.3cm]
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/03_robust_minmax.png}\hfill
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/04_denoised.png}
+    \caption{Comparaison 2D : image originale, correction de biais N4, normalisation robuste min-max et volume débruité.}
+    \label{fig:resultats_pretraitement}
+\end{figure}
+
+La correction de biais modifie principalement les variations lentes de l'intensité dans le volume, sans déplacer les structures anatomiques. La normalisation robuste améliore la comparabilité de l'échelle d'affichage en limitant l'effet des valeurs extrêmes. Le débruitage produit une image plus lisse, notamment dans les régions relativement homogènes, tout en conservant les contours principaux. Dans l'exemple traité, la corrélation avec l'image originale est de $r=0{,}998$ et l'écart absolu moyen est d'environ $4{,}93$ unités, ce qui indique une modification modérée plutôt qu'une transformation structurelle du volume.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/05_reference_mask.png}\hfill
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/06_cleaned_mask.png}\\[0.3cm]
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/09_otsu.png}\hfill
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/10_otsu_cleaned.png}
+    \caption{Masque de référence, masque nettoyé et résultats de la segmentation par seuillage d'Otsu (brut et nettoyé).}
+    \label{fig:resultats_segmentation}
+\end{figure}
+
+Le masque de référence contient plusieurs étiquettes et ne correspond donc pas à une simple image en niveaux de gris. Après binarisation et nettoyage, le masque devient plus lisible pour les opérations morphologiques et l'évaluation. La segmentation Otsu détecte cependant de nombreuses régions de forte intensité qui ne correspondent pas toutes à la région d'intérêt. Cette sur-segmentation est visible dans la comparaison avec le masque de référence et explique les faibles valeurs obtenues pour le Dice ($0{,}1802$), l'IoU ($0{,}0990$) et la sensibilité ($0{,}0994$). La précision élevée ($0{,}9607$) doit être interprétée avec prudence : elle ne compense pas la faible détection de la région cible.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/pipeline_overview.png}
+    \caption{Vue d'ensemble synthétique de l'exécution du workflow sur le volume IRM du sujet sub-ISPY2-125130.}
+    \label{fig:pipeline_overview}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/07_morphological_gradient.png}\hfill
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/08_white_tophat.png}\\[0.3cm]
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/11_canny.png}\hfill
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/2d/12_sobel.png}
+    \caption{Coupes axiales 2D des traitements morphologiques (gradient et top-hat) et des détecteurs de contours (Canny et Sobel).}
+    \label{fig:resultats_2d_morpho_edges}
+\end{figure}
+
+\subsection{Galerie des visualisations multiplanaires tridimensionnelles}
+\label{subsec:galerie_multiplanaire}
+
+Afin d'évaluer la cohérence spatiale 3D des traitements appliqués sur l'ensemble du volume IRM, des représentations multiplanaires combinant les coupes axiales ($X=108$), coronales ($Y=87$), sagittales ($Z=27$) ainsi qu'un rendu tridimensionnel volumique ont été générées pour chaque étape du workflow.
+
+La Figure~\ref{fig:multiplanar_pretraitement} présente les vues multiplanaires des différentes étapes de préparation de l'image.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/multiplanar/01_original.png}\hfill
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/multiplanar/02_bias_corrected.png}\\[0.3cm]
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/multiplanar/03_robust_minmax.png}\hfill
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/multiplanar/04_denoised.png}
+    \caption{Vues multiplanaires (axiale, coronale, sagittale et rendu 3D) des étapes de prétraitement : volume original, correction de champ de biais, normalisation robuste et volume débruité.}
+    \label{fig:multiplanar_pretraitement}
+\end{figure}
+
+La Figure~\ref{fig:multiplanar_segmentation} illustre les représentations multiplanaires des masques de référence et des résultats de segmentation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/multiplanar/05_reference_mask.png}\hfill
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/multiplanar/06_cleaned_mask.png}\\[0.3cm]
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/multiplanar/09_otsu.png}\hfill
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/multiplanar/10_otsu_cleaned.png}
+    \caption{Vues multiplanaires des masques et de la segmentation : masque de référence, masque nettoyé, segmentation par seuillage d'Otsu et masque Otsu nettoyé.}
+    \label{fig:multiplanar_segmentation}
+\end{figure}
+
+Enfin, la Figure~\ref{fig:multiplanar_morpho_edges} présente les vues multiplanaires obtenues pour les filtres morphologiques et les opérateurs de détection de contours.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/multiplanar/07_morphological_gradient.png}\hfill
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/multiplanar/08_white_tophat.png}\\[0.3cm]
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/multiplanar/11_canny.png}\hfill
+    \includegraphics[width=0.47\textwidth]{../results/sub-ISPY2-125130/ses-T0/figures/multiplanar/12_sobel.png}
+    \caption{Vues multiplanaires des filtres morphologiques et des détections de contours : gradient morphologique, transformation top-hat, détecteur de Canny et filtre de Sobel.}
+    \label{fig:multiplanar_morpho_edges}
+\end{figure}
+
+Les vues multiplanaires confirment que l'ensemble des traitements est appliqué de manière tridimensionnelle et volumétrique cohérente sur l'ensemble des plans d'imagerie IRM.
+
+Les métriques calculées pour la segmentation Otsu nettoyée, comparée au masque de référence, sont présentées dans le tableau suivant :
+
+\begin{table}[H]
+\centering
+\caption{Évaluation de la segmentation Otsu sur l'exemple traité.}
+\label{tab:metriques_otsu}
+\begin{tabular}{lr}
+\toprule
+Métrique & Valeur \\
+\midrule
+Dice & 0,1802 \\
+IoU & 0,0990 \\
+Sensibilité & 0,0994 \\
+Spécificité & 0,0001 \\
+Précision & 0,9607 \\
+Hausdorff 95 & 52,1282 \\
+Similarité de volume & 0,1035 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Ces valeurs montrent que la segmentation Otsu constitue uniquement une approche exploratoire dans cette expérience. Le faible coefficient de Dice et la faible sensibilité indiquent une correspondance limitée avec le masque de référence ; la précision élevée ne suffit donc pas à conclure à une bonne segmentation.
+
+\subsection{Résultats de l'extraction radiomique}
+\label{subsec:resultats_radiomique}
+
+Dans l'état actuel du projet, aucun fichier CSV de caractéristiques radiomiques n'est présent dans l'arborescence. Le nombre total de caractéristiques extraites, leur répartition par famille et les statistiques descriptives ne peuvent donc pas être rapportés comme des résultats expérimentaux définitifs.
+
+La prochaine étape devra appliquer une configuration radiomique fixée aux mêmes couples image--masque. Le tableau de résultats devra au minimum contenir l'identifiant de la patiente, la session, la phase DCE, la méthode de prétraitement, le nom de la caractéristique et sa valeur. Les familles attendues sont les suivantes : First Order, Shape, GLCM, GLRLM, GLSZM, GLDM et NGTDM.
+
+Un exemple de ligne de résultats pourra contenir les champs suivants : sujet, session, phase, prétraitement, caractéristique et valeur. Par exemple :
+
+\begin{lstlisting}[basicstyle=\small\ttfamily]
+ISPY2-xxxxx | T0 | dce-post-1 | original   | FirstOrder_Mean | a completer
+ISPY2-xxxxx | T0 | dce-post-1 | debruitage | FirstOrder_Mean | a completer
+\end{lstlisting}
+
+Les paramètres de discrétisation, le nombre de niveaux de gris, le type de masque et la configuration spatiale devront être conservés dans la méthodologie afin de rendre les caractéristiques reproductibles.
+
+\section{Analyse statistique}
+\label{sec:analyse_statistique}
+
+\subsection{Comparaison des méthodes de prétraitement}
+\label{subsec:comparaison_pretraitement}
+
+La comparaison statistique devra être réalisée à partir des mêmes sujets, sessions, phases et masques afin d'éviter que les différences observées ne soient dues à une composition différente des groupes. Pour chaque caractéristique, il conviendra d'examiner sa moyenne, son écart-type, sa médiane, son intervalle interquartile et son coefficient de variation.
+
+La stabilité pourra être étudiée en comparant les valeurs obtenues avant et après prétraitement. La reproductibilité pourra être résumée par un coefficient de corrélation intraclasse ou par une mesure de concordance adaptée au plan expérimental. Les tests statistiques devront tenir compte du caractère apparié des observations lorsque plusieurs méthodes sont appliquées au même volume.
+
+Les valeurs numériques de ces comparaisons restent à compléter, car aucun tableau de caractéristiques radiomiques ni fichier de sortie statistique n'est actuellement disponible dans le projet.
+
+\subsection{Visualisation des résultats}
+\label{subsec:visualisation_resultats}
+
+Les visualisations recommandées sont les suivantes :
+
+\begin{itemize}
+    \item des \textit{boxplots} pour comparer les distributions d'une caractéristique entre méthodes ;
+    \item des histogrammes pour visualiser les modifications d'intensité ;
+    \item des \textit{heatmaps} pour représenter les valeurs standardisées des caractéristiques ;
+    \item des matrices de corrélation pour étudier la redondance entre caractéristiques ;
+    \item des graphiques comparatifs pour classer les méthodes selon la stabilité ou la reproductibilité.
+\end{itemize}
+
+Chaque figure devra préciser la phase DCE, la session, la méthode de prétraitement, le nombre d'observations et l'unité éventuelle de la caractéristique.
+
+\subsection{Présentation des tableaux de résultats}
+\label{subsec:tableaux_resultats}
+
+Les tableaux devront présenter séparément les résultats descriptifs et les résultats des tests. Un tableau synthétique pourra contenir, pour chaque méthode, la moyenne, l'écart-type, la médiane, le coefficient de variation et la valeur de $p$ du test comparatif. Le classement final des méthodes devra être défini à partir d'un critère explicite, par exemple la stabilité moyenne des caractéristiques, la conservation de l'information ou la reproductibilité intersession.
+
+\subsection{Interprétation des résultats}
+\label{subsec:interpretation_resultats}
+
+Les méthodes de normalisation modifient directement l'échelle des intensités et peuvent donc affecter les caractéristiques du premier ordre. Les filtres de débruitage peuvent réduire les variations aléatoires, mais un lissage excessif risque d'atténuer les détails fins utilisés par les caractéristiques de texture. Les méthodes d'amélioration du contraste peuvent augmenter la visibilité de certaines structures tout en modifiant artificiellement les relations entre niveaux de gris.
+
+En conséquence, une méthode ne doit pas être considérée comme meilleure uniquement parce qu'elle produit une image visuellement plus nette. Elle doit également préserver une information radiomique stable, comparable entre sessions et suffisamment robuste face aux variations d'acquisition.
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Analyse des résultats}
+\label{subsec:discussion_analyse}
+
+Les résultats de la préparation des données montrent que la pipeline permet de passer d'une organisation DICOM hétérogène à une structure NIfTI cohérente et exploitable. La présence de quatre sessions pour chacune des cinq patientes rend possible une analyse longitudinale préliminaire. La validation des dimensions, de l'orientation, de la lisibilité et de la correspondance entre images et masques constitue une étape indispensable avant toute extraction quantitative.
+
+La variabilité des dimensions et des espacements de voxels met toutefois en évidence une difficulté importante : les caractéristiques de texture peuvent dépendre de la résolution spatiale et de la méthode d'acquisition. Une harmonisation spatiale, telle qu'une rééchantillonnage contrôlé, devra donc être envisagée avant les comparaisons intersujets, en conservant une configuration identique pour toutes les méthodes évaluées.
+
+L'exemple de débruitage montre que le volume traité reste fortement corrélé au volume original, ce qui suggère une modification modérée des intensités. Ce constat ne suffit cependant pas à conclure à une amélioration de la qualité radiomique. Seule l'analyse des caractéristiques extraites permettra de vérifier si le débruitage réduit la variabilité non informative sans supprimer les détails pertinents.
+
+La comparaison avec les travaux publiés s'organise autour de quatre axes majeurs :
+\begin{enumerate}
+    \item \textbf{La cohorte I-SPY 2 et TCIA :} l'exploitation des données IRM multicentriques I-SPY 2 repose sur le protocole d'essai clinique adaptatif décrit par Barker et al. \cite{barker2009} et hébergé sur la plateforme The Cancer Imaging Archive (TCIA) par Clark et al. \cite{clark2013}.
+    \item \textbf{Prétraitement et standardisation :} la conversion automatisée des données via \texttt{dcm2niix} \cite{li2016}, l'organisation structurée selon le format BIDS \cite{gorgolewski2016} et la correction d'inhomogénéité N4 \cite{tustison2010} s'inscrivent directement dans les recommandations récentes de prétraitement en radiomique \cite{demircioglu2025}.
+    \item \textbf{Standardisation des descripteurs radiomiques :} l'extraction de caractéristiques quantitatives s'appuie sur le formalisme de PyRadiomics \cite{vangriethuysen2017} et les directives de l'IBSI (Image Biomarker Standardization Initiative) définies par Zwanenburg et al. \cite{zwanenburg2020}.
+    \item \textbf{Reproductibilité et stabilité radiomique :} comme souligné par Lambin et al. \cite{lambin2012}, Traverso et al. \cite{traverso2018} et Koçak et al. \cite{kocak2024}, la variabilité des séquences d'acquisition et des filtres de prétraitement influence significativement la reproductibilité des descripteurs, justifiant une analyse rigoureuse du coefficient de corrélation intraclasse (ICC) et des applications en imagerie mammaire \cite{pesapane2023}.
+\end{enumerate}
+
+Cette comparaison prend en compte les différences de population, de séquences IRM, de définition des régions d'intérêt, de discrétisation des intensités, de rééchantillonnage et de méthode statistique, qui conditionnent la comparabilité des résultats.
+
+\subsection{Limites de l'étude}
+\label{subsec:discussion_limites}
+
+Plusieurs limites doivent être soulignées :
+
+\begin{itemize}
+    \item la taille de l'échantillon est limitée à cinq patientes ;
+    \item aucune validation multicentrique n'a été réalisée ;
+    \item l'analyse porte sur un nombre limité de séquences et de phases DCE ;
+    \item les acquisitions présentent une variabilité de dimensions et d'espacements de voxels ;
+    \item le module radiomique et l'analyse statistique comparative ne sont pas encore matérialisés par des fichiers de résultats dans le projet ;
+    \item le temps de calcul peut devenir important pour les volumes 3D et certains filtres ;
+    \item aucun modèle prédictif n'est entraîné dans ce travail.
+\end{itemize}
+
+Ces limites réduisent la portée des conclusions. Les résultats doivent être considérés comme une validation expérimentale de la pipeline et non comme une preuve de performance clinique.
+
+\section{Conclusion du chapitre}
+\label{sec:conclusion_chapitre3}
+
+L'exécution de la pipeline sur le sous-ensemble étudié a permis de récupérer cinq patientes et leurs quatre sessions longitudinales, de convertir les données DICOM en 100 fichiers NIfTI de référence et de les organiser dans une structure de type BIDS dérivée. Les contrôles de qualité confirment la lisibilité des volumes, leur orientation RAS et la compatibilité dimensionnelle entre les images et les masques.
+
+Les modules de prétraitement offrent plusieurs stratégies complémentaires pour corriger les intensités, réduire le bruit, améliorer le contraste, produire des contours et nettoyer les masques. Toutefois, l'impact réel de ces méthodes sur la radiomique ne pourra être établi qu'après l'extraction effective des caractéristiques et la réalisation des tests statistiques prévus.
+
+Ainsi, la suite logique du travail consiste à compléter l'extraction radiomique, à produire les tableaux et figures comparatifs, puis à confronter les résultats obtenus aux études publiées. Cette étape permettra de déterminer quelles méthodes offrent le meilleur compromis entre amélioration visuelle, conservation de l'information et stabilité des caractéristiques.

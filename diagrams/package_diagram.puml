@@ -2,88 +2,39 @@
 !pragma layout smetana
 !theme plain
 left to right direction
-skinparam backgroundColor #FAFBFF
-skinparam defaultFontName Arial
-skinparam defaultFontSize 11
+skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam linetype ortho
 
 title "Medical Image Processing — architecture des packages"
 
-package "src" as SRC {
-  package "medio" as MEDIO {
-    [MedicalImage3D]
-    [load_nifti]
-    [save_nifti]
-  }
-  package "denoise" as DENOISE {
-    [BaseMedicalDenoiser]
-    [AnisotropicDenoiser]
-    [GaussianDenoiser]
-    [NLMRicianDenoiser]
-  }
-  package "edges" as EDGES {
-    [BaseEdgeDetector]
-    [CannyEdgeDetector]
-    [SobelEdgeDetector]
-  }
-  package "preprocessing" as PREPROC {
-    [Preprocessing]
-  }
-  package "mathmorpho" as MATH {
-    [NiftiIO]
-    [MathMorphology]
-    [MorphologyCleaning]
-    [MorphologyEnhancement]
-    [MorphologySkeleton]
-    [DistanceTransform]
-    [MorphologyShape]
-    [MorphologyStats]
-    [WatershedSegmentation]
-  }
-  package "segmed3d" as SEG {
-    [BaseSegmentation]
-    [ThresholdSegmentation]
-    [WatershedSegmentation]
-    [ActiveContourSegmentation]
-    [LevelSetSegmentation]
-    [RegionGrowingSegmentation]
-    [ClusteringSegmentation]
-    [AtlasSegmentation]
-    package "utils" as SEGUTILS {
-      [ImageIO]
-      [Preprocessor]
-      [Postprocessor]
-      [Metrics]
-      [Visualizer]
-    }
-  }
-  package "utils" as DATAUTILS {
-    [ISPY2Extractor]
-  }
-}
+package "medio" as MEDIO
+package "denoise" as DENOISE
+package "edges" as EDGES
+package "preprocessing" as PREPROC
+package "mathmorpho" as MATH
+package "segmed3d" as SEG
+package "segmed3d.utils" as SEGUTILS
+package "utils" as DATAUTILS
+component "DIPY / SciPy / SimpleITK" as DENOISE_LIB
+component "scikit-image / SciPy" as EDGES_LIB
+component "NiBabel / SimpleITK / scikit-image" as PREPROC_LIB
+component "NiBabel / SciPy / scikit-image" as MATH_LIB
+component "SciPy / scikit-image / SimpleITK / scikit-learn" as SEG_LIB
+component "NiBabel / SciPy / scikit-image" as SEGUTILS_LIB
+component "TCIA / NBIA" as TCIA_LIB
+component "DICOM / NiBabel / dicom2nifti" as DATA_LIB
 
-DENOISE --> MEDIO : MedicalImage3D
-EDGES --> MEDIO : MedicalImage3D
-SEG --> SEGUTILS : export / save
-SEGUTILS --> "NumPy / SciPy" : volumes / opérations
-MATH --> "NumPy / SciPy / scikit-image" : calcul scientifique
-PREPROC --> "NiBabel / SimpleITK" : NIfTI / correction
-DATAUTILS --> "TCIA / DICOM" : extraction
-DATAUTILS --> "NiBabel / dicom2nifti" : conversion
-
-note bottom of SEG
-  API commune scikit-learn-style :
-  constructeur(volume) → fit(...) → get_mask()
-end note
-
-legend right
-  <b>Flux principal</b>
-  medio      modèle d'image et I/O minimal
-  denoise    réduction du bruit
-  edges      contours
-  mathmorpho morphologie / mesures
-  segmed3d   segmentation et évaluation
-  utils      extraction TCIA/ISPY2
-endlegend
+DENOISE --> MEDIO
+EDGES --> MEDIO
+DENOISE --> DENOISE_LIB
+EDGES --> EDGES_LIB
+PREPROC --> PREPROC_LIB
+MATH --> MATH_LIB
+SEG --> SEG_LIB
+SEGUTILS --> SEGUTILS_LIB
+DATAUTILS --> TCIA_LIB
+DATAUTILS --> DATA_LIB
 @enduml

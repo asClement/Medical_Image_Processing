@@ -1,0 +1,87 @@
+\xpginauxfiletrue 
+\selectlanguage *{french}
+\contentsline {section}{Remerciements}{1}{Doc-Start}%
+\contentsline {section}{Résumé}{2}{Doc-Start}%
+\contentsline {section}{Abstract}{3}{Doc-Start}%
+\contentsline {section}{Liste des figures}{6}{Doc-Start}%
+\contentsline {section}{Liste des tableaux}{7}{Doc-Start}%
+\contentsline {section}{Liste des abréviations}{8}{Doc-Start}%
+\contentsline {chapter}{Introduction générale}{9}{table.0.1}%
+\contentsline {chapter}{\numberline {1}ÉTUDE PRÉALABLE DU SUJET}{10}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Présentation du domaine d'étude}{11}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Le cancer du sein : contexte et enjeux}{11}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}L'imagerie par résonance magnétique (IRM) dans le diagnostic du cancer du sein}{12}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.3}Radiomique et analyse quantitative des images médicales}{12}{subsection.1.1.3}%
+\contentsline {subsection}{\numberline {1.1.4}Les pipelines d'analyse des images médicales}{13}{subsection.1.1.4}%
+\contentsline {section}{\numberline {1.2}Problématique du sujet}{14}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Hétérogénéité des données d'imagerie médicale}{14}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Gestion des données médicales}{14}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Influence du prétraitement sur les caractéristiques radiomiques}{14}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}Besoin d'une pipeline modulaire et reproductible}{15}{subsection.1.2.4}%
+\contentsline {section}{\numberline {1.3}Intérêt de l'étude}{15}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Intérêt scientifique}{15}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Intérêt technique}{15}{subsection.1.3.2}%
+\contentsline {subsection}{\numberline {1.3.3}Intérêt applicatif}{16}{subsection.1.3.3}%
+\contentsline {section}{\numberline {1.4}Objectifs du projet}{16}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Objectif général}{16}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Objectifs spécifiques}{16}{subsection.1.4.2}%
+\contentsline {section}{\numberline {1.5}Revue de la littérature}{16}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}Formats et organisation des données}{16}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}Méthodes de prétraitement et extraction radiomique}{17}{subsection.1.5.2}%
+\contentsline {subsection}{\numberline {1.5.3}Limites des approches existantes}{17}{subsection.1.5.3}%
+\contentsline {subsection}{\numberline {1.5.4}Solution proposée}{17}{subsection.1.5.4}%
+\contentsline {section}{Conclusion du chapitre}{18}{figure.1.2}%
+\contentsline {chapter}{\numberline {2}Matériels et Méthodes}{19}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Présentation générale}{19}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Matériels}{20}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Jeu de données I-SPY 2}{20}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Organisation des données}{21}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Environnement de développement}{22}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Environnement matériel}{23}{subsection.2.2.4}%
+\contentsline {section}{\numberline {2.3}Conception de la pipeline}{23}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Architecture générale}{23}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Architecture logicielle et packages}{24}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Principes architecturaux et choix de conception}{24}{subsection.2.3.3}%
+\contentsline {section}{\numberline {2.4}Modules de la pipeline}{24}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Extraction des données}{25}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Conversion DICOM $\rightarrow $ NIfTI}{25}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Organisation des données selon BIDS}{25}{subsection.2.4.3}%
+\contentsline {subsection}{\numberline {2.4.4}Bibliothèque de prétraitement}{25}{subsection.2.4.4}%
+\contentsline {section}{\numberline {2.5}Méthodes de prétraitement}{25}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Correction d'intensité et normalisation}{26}{subsection.2.5.1}%
+\contentsline {subsubsection}{Correction du champ de biais N4ITK}{26}{subsubsection*.1}%
+\contentsline {subsubsection}{Normalisation Min-Max}{26}{subsubsection*.2}%
+\contentsline {subsubsection}{Normalisation Z-score}{26}{subsubsection*.3}%
+\contentsline {subsubsection}{Median-MAD scaling}{26}{subsubsection*.4}%
+\contentsline {subsubsection}{Modèle de mélange gaussien (GMM)}{26}{subsubsection*.5}%
+\contentsline {subsection}{\numberline {2.5.2}Amélioration du contraste}{27}{subsection.2.5.2}%
+\contentsline {subsubsection}{Égalisation d'histogramme (HE)}{27}{subsubsection*.6}%
+\contentsline {subsubsection}{CLAHE}{27}{subsubsection*.7}%
+\contentsline {subsubsection}{Correction gamma}{27}{subsubsection*.8}%
+\contentsline {subsection}{\numberline {2.5.3}Réduction du bruit}{27}{subsection.2.5.3}%
+\contentsline {subsubsection}{Filtre gaussien}{27}{subsubsection*.9}%
+\contentsline {subsubsection}{Diffusion anisotrope de Perona-Malik}{28}{subsubsection*.10}%
+\contentsline {subsubsection}{Non-Local Means adapté au bruit Rician}{28}{subsubsection*.11}%
+\contentsline {subsection}{\numberline {2.5.4}Détection de contours}{28}{subsection.2.5.4}%
+\contentsline {subsubsection}{Sobel}{28}{subsubsection*.12}%
+\contentsline {subsubsection}{Canny}{28}{subsubsection*.13}%
+\contentsline {subsection}{\numberline {2.5.5}Morphologie mathématique}{28}{subsection.2.5.5}%
+\contentsline {subsection}{\numberline {2.5.6}Segmentation des régions d'intérêt}{29}{subsection.2.5.6}%
+\contentsline {subsubsection}{Otsu}{29}{subsubsection*.14}%
+\contentsline {subsubsection}{Watershed}{29}{subsubsection*.15}%
+\contentsline {subsubsection}{Active Contours (Snakes)}{29}{subsubsection*.16}%
+\contentsline {subsubsection}{Level Set}{29}{subsubsection*.17}%
+\contentsline {subsubsection}{Region Growing}{29}{subsubsection*.18}%
+\contentsline {subsubsection}{K-Means}{29}{subsubsection*.19}%
+\contentsline {subsubsection}{Atlas-based segmentation}{29}{subsubsection*.20}%
+\contentsline {subsection}{\numberline {2.5.7}Post-traitement et évaluation des masques}{30}{subsection.2.5.7}%
+\contentsline {subsubsection}{Nettoyage}{30}{subsubsection*.21}%
+\contentsline {subsubsection}{Métriques d'évaluation}{30}{subsubsection*.22}%
+\contentsline {section}{\numberline {2.6}Extraction des caractéristiques radiomiques}{31}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Principe et utilisation de PyRadiomics}{31}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}Catégories de caractéristiques radiomiques}{31}{subsection.2.6.2}%
+\contentsline {section}{\numberline {2.7}Analyse statistique}{32}{section.2.7}%
+\contentsline {subsection}{\numberline {2.7.1}Indicateurs de qualité et de stabilité}{32}{subsection.2.7.1}%
+\contentsline {subsection}{\numberline {2.7.2}Tests statistiques et comparaison des méthodes}{32}{subsection.2.7.2}%
+\contentsline {section}{Conclusion du chapitre}{33}{table.2.13}%
+\xpginauxfilefalse 

@@ -1,0 +1,44 @@
+\xpginauxfiletrue 
+\addvspace {10\p@ }
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Pipeline générale d'analyse des images médicales.}}{13}{figure.1.1}%
+\addvspace {10\p@ }
+\setforeignlanguage {french}
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Illustration du jeu de données I-SPY 2 et des acquisitions IRM utilisées dans cette étude.}}{18}{figure.2.1}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Organisation des données selon une structure inspirée du standard BIDS.}}{19}{figure.2.2}%
+\setforeignlanguage {french}
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Diagramme fonctionnel du traitement et de l'évaluation d'une IRM DCE.}}{21}{figure.2.3}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Architecture des packages Python et de leurs dépendances principales.}}{22}{figure.2.4}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Dépendances entre les modules centraux de traitement des images.}}{23}{figure.2.5}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Séquence d'extraction, de conversion et de stockage des données I-SPY 2.}}{24}{figure.2.6}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Classes et méthodes dédiées à la préparation des images.}}{25}{figure.2.7}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Classes dédiées aux opérations morphologiques et à l'analyse de forme.}}{26}{figure.2.8}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Stratégies de segmentation et outils d'évaluation des masques.}}{27}{figure.2.9}%
+\addvspace {10\p@ }
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Coupe axiale du volume DCE sélectionné après conversion au format NIfTI ($X=108$, $Y=87$, $Z=27$).}}{31}{figure.3.1}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Comparaison 2D : image originale, correction de biais N4, normalisation robuste min-max et volume débruité.}}{33}{figure.3.2}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Masque de référence, masque nettoyé et résultats de la segmentation par seuillage d'Otsu (brut et nettoyé).}}{34}{figure.3.3}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Vue d'ensemble synthétique de l'exécution du workflow sur le volume IRM du sujet sub-ISPY2-125130.}}{35}{figure.3.4}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Coupes axiales 2D des traitements morphologiques (gradient et top-hat) et des détecteurs de contours (Canny et Sobel).}}{36}{figure.3.5}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Vues multiplanaires (axiale, coronale, sagittale et rendu 3D) des étapes de prétraitement : volume original, correction de champ de biais, normalisation robuste et volume débruité.}}{37}{figure.3.6}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Vues multiplanaires des masques et de la segmentation : masque de référence, masque nettoyé, segmentation par seuillage d'Otsu et masque Otsu nettoyé.}}{38}{figure.3.7}%
+\setforeignlanguage {french}
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Vues multiplanaires des filtres morphologiques et des détections de contours : gradient morphologique, transformation top-hat, détecteur de Canny et filtre de Sobel.}}{39}{figure.3.8}%
+\setforeignlanguage {french}
+\xpginauxfilefalse 

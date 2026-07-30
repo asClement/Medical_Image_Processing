@@ -2,14 +2,16 @@
 !pragma layout smetana
 !theme plain
 left to right direction
-skinparam backgroundColor #FAFBFF
-skinparam defaultFontName Arial
-skinparam classAttributeIconSize 0
+skinparam monochrome true
 skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam classStereotypeIcon false
+skinparam linetype ortho
+hide circle
 
 title "Vue fonctionnelle — morphologie et analyse de forme"
 
-package "Transformations morphologiques" #FFF4E5 {
+package "Transformations morphologiques" {
   class MathMorphology {
     + dilatation(...): np.ndarray
     + erosion(...): np.ndarray
@@ -17,6 +19,7 @@ package "Transformations morphologiques" #FFF4E5 {
     + fermeture(...): np.ndarray
     + reconstruction(...): np.ndarray
     + gradient_morphologique(...): np.ndarray
+    + erosion_geodesique(...): np.ndarray
   }
   class MorphologyEnhancement {
     + top_hat_blanc(...): np.ndarray
@@ -24,7 +27,7 @@ package "Transformations morphologiques" #FFF4E5 {
   }
 }
 
-package "Nettoyage et topologie" #E8F1FF {
+package "Nettoyage et topologie" {
   class MorphologyCleaning {
     + supprimer_petits_objets(...): np.ndarray
     + supprimer_petits_trous(...): np.ndarray
@@ -40,7 +43,7 @@ package "Nettoyage et topologie" #E8F1FF {
   }
 }
 
-package "Mesures" #EAF7EE {
+package "Mesures" {
   class MorphologyShape {
     + enveloppe_convexe(): np.ndarray
     + indice_convexite(): float
@@ -48,14 +51,18 @@ package "Mesures" #EAF7EE {
   class MorphologyStats {
     + resume(): dict
     + rapport_complet(...): dict
+    + afficher_resume(): None
     + histogramme_intensites(...)
+    + histogramme_volume_comparatif()
     + afficher_coupes(...)
   }
 }
 
-MathMorphology ..> MorphologyEnhancement : éléments structurants
-MorphologyCleaning ..> MorphologyStats : avant / après
-MorphologySkeleton ..> DistanceTransform : épaisseur / topologie
-MorphologyShape ..> MorphologyStats : caractéristiques
-DistanceTransform ..> "SciPy / scikit-image" : calcul numérique
+MathMorphology ..> "scikit-image" : opérations morphologiques
+MorphologyEnhancement ..> "scikit-image" : top-hat
+MorphologyCleaning ..> "scikit-image" : nettoyage / composantes
+MorphologySkeleton ..> "scikit-image" : squelette / axe médian
+MorphologyShape ..> "scikit-image" : enveloppe convexe
+MorphologyStats ..> "SciPy / Matplotlib" : statistiques / figures
+DistanceTransform ..> "SciPy" : transformée de distance
 @enduml

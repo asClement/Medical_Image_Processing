@@ -51,3 +51,6 @@ output/
 results/
 *_denoised*
 *temp*
+
+# Diagrams kept outside version control
+diagrams/

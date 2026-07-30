@@ -2,15 +2,12 @@
 !pragma layout smetana
 !theme plain
 left to right direction
-skinparam backgroundColor #FAFBFF
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
-skinparam classAttributeIconSize 0
+skinparam monochrome true
 skinparam shadowing false
-skinparam class {
-  BackgroundColor #E8F1FF
-  BorderColor #4666A8
-}
+skinparam classAttributeIconSize 0
+skinparam classStereotypeIcon false
+skinparam linetype ortho
+hide circle
 
 title "Vue fonctionnelle — segmentation et évaluation"
 
@@ -24,7 +21,7 @@ abstract class BaseSegmentation {
   + __call__(...): np.ndarray
 }
 
-package "Méthodes de segmentation" #E8F1FF {
+package "Méthodes de segmentation" {
   class ThresholdSegmentation
   class WatershedSegmentation
   class ActiveContourSegmentation
@@ -34,7 +31,7 @@ package "Méthodes de segmentation" #E8F1FF {
   class AtlasSegmentation
 }
 
-package "Préparation du masque" #FFF4E5 {
+package "Préparation du masque" {
   class Postprocessor <<utility>> {
     + clean_mask(...): np.ndarray
     + remove_small_objects(...): np.ndarray
@@ -43,11 +40,15 @@ package "Préparation du masque" #FFF4E5 {
   }
 }
 
-package "Évaluation et visualisation" #EAF7EE {
+package "Évaluation et visualisation" {
   class Metrics <<utility>> {
     + dice(...): float
     + iou(...): float
+    + sensitivity(...): float
+    + specificity(...): float
+    + precision(...): float
     + hausdorff95(...): float
+    + volume_similarity(...): float
     + all_metrics(...): dict
   }
   class Visualizer <<utility>> {
@@ -65,9 +66,7 @@ BaseSegmentation <|-- LevelSetSegmentation
 BaseSegmentation <|-- RegionGrowingSegmentation
 BaseSegmentation <|-- ClusteringSegmentation
 BaseSegmentation <|-- AtlasSegmentation
-BaseSegmentation ..> Postprocessor : masque
-Postprocessor ..> Metrics : masque nettoyé
-Metrics ..> Visualizer : résultats à inspecter
 AtlasSegmentation ..> "SimpleITK" : registration / STAPLE
 ClusteringSegmentation ..> "scikit-learn" : K-Means
+ClusteringSegmentation ..> "scikit-fuzzy" : Fuzzy C-Means (optionnel)
 @enduml
